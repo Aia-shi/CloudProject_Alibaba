@@ -1,3 +1,5 @@
+import Navbar from "~/components/Navbar";
+import RightPanel from "~/components/RightPanel";
 import type { Route } from "./+types/home";
 
 export function meta({}: Route.MetaArgs) {
@@ -8,5 +10,16 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <div> Home Page</div>;
+  return (
+   <div className="flex h-full w-full items-center">
+      <Navbar />
+      <div className="flex w-2.5 h-[583px] bg-linear-to-b from-[#1F5E53] to-[#2E2E2E]
+rounded-2xl ml-30 mr-6 ">
+
+      </div>
+      <div className="ml-auto">
+        <RightPanel />
+      </div>
+    </div>
+  );
 }
