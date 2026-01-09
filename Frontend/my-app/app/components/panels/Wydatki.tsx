@@ -37,9 +37,18 @@ export function Wydatki() {
     (async () => {
       try {
         const bd = await getBudget();
-        setData(bd);
-        if (bd.periods.length > 0) {
-          setSelectedPeriodId(bd.periods[0].id);
+        console.log("Periods")
+        console.log(bd.periods)
+        console.log(bd.expenses)
+        console.log(bd.incomes)
+        const normalized: BudgetData = {
+          periods: bd.periods ?? [],
+          expenses: bd.expenses ?? [],
+          incomes: bd.incomes ?? [],
+        };
+        setData(normalized);
+        if (normalized.periods.length > 0) {
+          setSelectedPeriodId(normalized.periods[0].id);
         }
       } catch (e) {
         console.error(e);
@@ -50,6 +59,8 @@ export function Wydatki() {
   }, []);
 
   const updateAndSave = async (next: BudgetData) => {
+    console.log("Update and save")
+    console.log(next)
     setData(next);
     setSaving(true);
     try {
@@ -66,13 +77,13 @@ export function Wydatki() {
       "Nazwa okresu (np. 'Wydatki w październiku'):",
     );
     if (!name) return;
-
-    const newPeriod: Period = { id: Date.now(), name };
-
+    const newPeriod: Period = { id: 0, name };
+    const periods = data.periods ?? [];
     const next: BudgetData = {
       ...data,
-      periods: [...data.periods, newPeriod],
+      periods: [...periods, newPeriod],
     };
+    console.log("Next period: " + next)
     await updateAndSave(next);
 
     setSelectedPeriodId(newPeriod.id);
@@ -93,8 +104,8 @@ export function Wydatki() {
     const next: BudgetData = {
       ...data,
       periods: data.periods.filter((p) => p.id !== id),
-      expenses: data.expenses.filter((e) => e.periodId !== id),
-      incomes: data.incomes.filter((i) => i.periodId !== id),
+      expenses: data.expenses.filter((e) => e.period_id !== id),
+      incomes: data.incomes.filter((i) => i.period_id !== id),
     };
     await updateAndSave(next);
 
@@ -116,8 +127,8 @@ export function Wydatki() {
     }
 
     const draft: Expense = {
-      id: Date.now(),
-      periodId: selectedPeriodId,
+      id: 0,
+      period_id: selectedPeriodId,
       title: "",
       amount: 0,
       description: "",
@@ -138,10 +149,12 @@ export function Wydatki() {
   };
 
   const handleSaveExpense = async (exp: Expense) => {
+    const expenses = data.expenses ?? [];
+
     if (isNew) {
       const next: BudgetData = {
         ...data,
-        expenses: [...data.expenses, exp],
+        expenses: [...expenses, exp],
       };
       await updateAndSave(next);
       setIsNew(false);
@@ -150,7 +163,7 @@ export function Wydatki() {
     } else {
       const next: BudgetData = {
         ...data,
-        expenses: data.expenses.map((e) =>
+        expenses: expenses.map((e) =>
           e.id === exp.id ? exp : e,
         ),
       };
@@ -185,8 +198,8 @@ export function Wydatki() {
 
   const baseBalance = calcGlobalBalance(data);
 
-  const currentExpenses = data.expenses.filter(
-    (e) => e.periodId === selectedPeriodId,
+  const currentExpenses = (data.expenses ?? []).filter(
+    (e) => e.period_id === selectedPeriodId,
   );
 
   const total = currentExpenses.reduce(
@@ -305,7 +318,7 @@ export function Wydatki() {
           {/* wiersz „Nowy wydatek...” dla draftu */}
           {isNew &&
             editingExpense &&
-            editingExpense.periodId === selectedPeriodId && (
+            editingExpense.period_id === selectedPeriodId && (
               <button
                 type="button"
                 onClick={() =>

@@ -31,10 +31,11 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 }
 
 const loginUserWithUsername = `-- name: LoginUserWithUsername :one
-SELECT username, passwdhash FROM users WHERE username = $1
+SELECT id, username, passwdhash FROM users WHERE username = $1
 `
 
 type LoginUserWithUsernameRow struct {
+	ID         int32  `json:"id"`
 	Username   string `json:"username"`
 	Passwdhash string `json:"passwdhash"`
 }
@@ -42,6 +43,6 @@ type LoginUserWithUsernameRow struct {
 func (q *Queries) LoginUserWithUsername(ctx context.Context, username string) (LoginUserWithUsernameRow, error) {
 	row := q.db.QueryRow(ctx, loginUserWithUsername, username)
 	var i LoginUserWithUsernameRow
-	err := row.Scan(&i.Username, &i.Passwdhash)
+	err := row.Scan(&i.ID, &i.Username, &i.Passwdhash)
 	return i, err
 }

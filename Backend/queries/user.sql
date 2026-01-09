@@ -8,4 +8,4 @@ INSERT INTO users (
 );
 
 -- name: LoginUserWithUsername :one
-SELECT username, passwdhash FROM users WHERE username = $1; 
+SELECT id, username, passwdhash FROM users WHERE username = $1; 

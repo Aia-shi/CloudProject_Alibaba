@@ -24,6 +24,7 @@ func Authentication(next http.Handler) http.Handler {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
+		log.Println("Jestem tu 1")
 		if jwtToken == nil {
 			http.Error(w, "unauthorized", http.StatusUnauthorized)
 			return
@@ -34,10 +35,12 @@ func Authentication(next http.Handler) http.Handler {
 			}
 			return key, nil
 		})
+		log.Println("Jestem tu 2")
 		if token == nil {
 			writeUnauthed(w)
 			return
 		}
+		log.Println("Jestem tu 3")
 		if err != nil && !token.Valid {
 			log.Println("Parse error: " + err.Error())
 			if !token.Valid {
@@ -46,7 +49,10 @@ func Authentication(next http.Handler) http.Handler {
 			writeUnauthed(w)
 			return
 		}
+		log.Println("Jestem tu 4")
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
+			log.Println(claims)
+			log.Println("Jestem tutaj w auth middleware")
 			ctx := context.WithValue(r.Context(), "claims", claims)
 			next.ServeHTTP(w, r.WithContext(ctx))
 		} else {
