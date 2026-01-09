@@ -64,7 +64,7 @@ export function Przychody() {
     );
     if (!name) return;
 
-    const newPeriod: Period = { id: Date.now(), name };
+    const newPeriod: Period = { id: 0, name };
 
     const next: BudgetData = {
       ...data,
@@ -90,8 +90,8 @@ export function Przychody() {
     const next: BudgetData = {
       ...data,
       periods: data.periods.filter((p) => p.id !== id),
-      expenses: data.expenses.filter((e) => e.periodId !== id),
-      incomes: data.incomes.filter((i) => i.periodId !== id),
+      expenses: data.expenses.filter((e) => e.period_id !== id),
+      incomes: data.incomes.filter((i) => i.period_id !== id),
     };
     await updateAndSave(next);
 
@@ -113,8 +113,8 @@ export function Przychody() {
     }
 
     const draft: Income = {
-      id: Date.now(),
-      periodId: selectedPeriodId,
+      id: 0,
+      period_id: selectedPeriodId,
       title: "",
       amount: 0,
       description: "",
@@ -182,7 +182,7 @@ export function Przychody() {
   const baseBalance = calcGlobalBalance(data);
 
   const currentIncomes = data.incomes.filter(
-    (i) => i.periodId === selectedPeriodId,
+    (i) => i.period_id === selectedPeriodId,
   );
 
   const totalIncome = currentIncomes.reduce(
@@ -300,7 +300,7 @@ export function Przychody() {
         <div className="flex-1 mt-1 flex flex-col gap-1 overflow-y-auto pr-1">
           {isNew &&
             editingIncome &&
-            editingIncome.periodId === selectedPeriodId && (
+            editingIncome.period_id === selectedPeriodId && (
               <button
                 type="button"
                 onClick={() =>

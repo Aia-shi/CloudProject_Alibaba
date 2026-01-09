@@ -67,7 +67,7 @@ func (s *BaseUserService) LoginUser(ctx context.Context, loginData *models.Login
 		return "", errors.New("unauthorized")
 	}
 
-	token, err := s.generateJWT(user.Username)
+	token, err := s.generateJWT(user.ID)
 	if err != nil {
 		log.Println(err.Error())
 		return "", errors.New("internal failure")
@@ -76,10 +76,10 @@ func (s *BaseUserService) LoginUser(ctx context.Context, loginData *models.Login
 	return token, nil
 }
 
-func (s *BaseUserService) generateJWT(username string) (string, error) {
+func (s *BaseUserService) generateJWT(userId int32) (string, error) {
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"sub": username,
+			"sub": userId,
 			"exp": time.Now().Add(24 * time.Hour).Unix(),
 			"iat": time.Now().Unix(),
 		})

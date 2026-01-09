@@ -8,6 +8,35 @@ import (
 	"time"
 )
 
+type Expense struct {
+	ID          int32   `json:"id"`
+	PeriodID    int32   `json:"period_id"`
+	UserID      int32   `json:"user_id"`
+	Title       string  `json:"title"`
+	Amount      float64 `json:"amount"`
+	Description string  `json:"description"`
+	Date        string  `json:"date"`
+	Status      string  `json:"status"`
+	Category    string  `json:"category"`
+}
+
+type Income struct {
+	ID          int32   `json:"id"`
+	PeriodID    int32   `json:"period_id"`
+	UserID      int32   `json:"user_id"`
+	Title       string  `json:"title"`
+	Amount      float64 `json:"amount"`
+	Description string  `json:"description"`
+	Date        string  `json:"date"`
+	Category    string  `json:"category"`
+}
+
+type Period struct {
+	ID     int32  `json:"id"`
+	Name   string `json:"name"`
+	UserID int32  `json:"user_id"`
+}
+
 type User struct {
 	ID         int32     `json:"id"`
 	Username   string    `json:"username"`
